@@ -29,6 +29,9 @@ test('Altering project title and description', async ({ page }) => {
 
   await page.waitForLoadState('domcontentloaded')
 
+  await expect(page.getByText('Reviews new description')).toBeVisible()
+  await expect(page.getByText('Reviews new title')).toBeVisible()
+
   await page.getByRole('link', { name: 'Reviews new' }).click()
 
   await page.waitForLoadState('domcontentloaded')
