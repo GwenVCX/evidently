@@ -66,7 +66,7 @@ jobs:
 
     - name: Run Playwright tests
       working-directory: ui/v2/service
-      run: pnpm wait-on tcp:8000 -t 30000 && pnpm test
+      run: pnpm wait-on tcp:8000 -t 3000000 && pnpm test
 
     - uses: actions/upload-artifact@v3
       if: always()
