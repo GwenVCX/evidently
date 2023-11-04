@@ -65,8 +65,8 @@ jobs:
       run: evidently ui --port 8000 --demo-projects all --workspace test-workspace &
 
     - name: Run Playwright tests
-      working-directory: ui/v2
-      run: pnpm -C service wait-on tcp:8000 -t 30000 && pnpm test
+      working-directory: ui/v2/service
+      run: pnpm wait-on tcp:8000 -t 30000 && pnpm test
 
     - uses: actions/upload-artifact@v3
       if: always()
