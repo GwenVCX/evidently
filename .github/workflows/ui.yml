@@ -69,9 +69,8 @@ jobs:
       run: pnpm wait-on tcp:8000 -t 900000 && pnpm test
 
     - uses: actions/upload-artifact@v3
-      working-directory: ui/v2/service
       if: always()
       with:
         name: playwright-report
-        path: playwright-report/
+        path: ui/v2/service/playwright-report/
         retention-days: 30
