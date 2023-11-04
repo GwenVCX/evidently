@@ -61,13 +61,12 @@ jobs:
     - name: Install python dependencies
       run: pip install -e .
 
-
     - name: Run UI
       run: evidently ui --port 8000 --demo-projects all --workspace test-workspace &
 
     - name: Run Playwright tests
       working-directory: ui/v2
-      run: pnpm wait-on tcp:8000 -t 30000 && pnpm test
+      run: pnpm -C service wait-on tcp:8000 -t 30000 && pnpm test
 
     - uses: actions/upload-artifact@v3
       if: always()
