@@ -38,3 +38,29 @@ test('Altering project title and description', async ({ page }) => {
 
   await expect(page.getByText('Dashboard')).toBeVisible()
 })
+
+test('Smoke test', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+  await page.getByText('Bike Rental Demand Forecast').click()
+  await page.getByRole('tab', { name: 'Reports' }).click()
+
+  await page.getByRole('button', { name: 'production_critical' }).first().click()
+  await expect(page.getByRole('columnheader', { name: 'Report ID' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Actions' })).toBeVisible()
+
+  await page.getByRole('button', { name: 'View' }).first().click()
+  await expect(page.getByText('Dataset Drift', { exact: true })).toBeVisible()
+
+  await page.getByRole('tab', { name: 'Test suites' }).click()
+
+  await expect(page.getByRole('columnheader', { name: 'Test Suite ID' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Actions' })).toBeVisible()
+
+  await page.getByRole('button', { name: 'View' }).first().click()
+  await expect(page.getByText('Drift per Column', { exact: true }).first()).toBeVisible()
+})
