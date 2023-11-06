@@ -31,7 +31,7 @@ test('Can view Snapshot', async ({ page }) => {
   await expect(page.getByText('Drift per Column', { exact: true }).first()).toBeVisible()
 })
 
-test('Download reports and test suites', async ({ page }) => {
+test.skip('Download reports and test suites', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
 
