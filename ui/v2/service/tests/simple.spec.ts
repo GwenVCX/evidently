@@ -13,8 +13,9 @@ test('Altering project title and description', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Demo project - Reviews' }).hover()
 
+  // edit button
   await page
-    .locator('#root div')
+    .locator('#root')
     .filter({
       hasText:
         'A toy demo project using E-commerce Reviews dataset. Text and tabular data, classification.'
@@ -39,7 +40,7 @@ test('Altering project title and description', async ({ page }) => {
   await expect(page.getByText('Dashboard')).toBeVisible()
 })
 
-test('Smoke test', async ({ page }) => {
+test('Navigation test', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
   await page.getByText('Bike Rental Demand Forecast').click()
@@ -65,46 +66,28 @@ test('Smoke test', async ({ page }) => {
   await expect(page.getByText('Drift per Column', { exact: true }).first()).toBeVisible()
 })
 
-test('Download report test', async ({ page }) => {
+test('Download reports and test suites test', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
 
   await page.waitForLoadState('domcontentloaded')
 
-  await page.getByRole('tab', { name: 'Reports' }).click()
+  for (const tab of ['Reports', 'Test Suite']) {
+    await page.getByRole('tab', { name: tab }).click()
 
-  await page.waitForLoadState('domcontentloaded')
+    await page.waitForLoadState('domcontentloaded')
 
-  await page.getByText('Download').first().click()
+    for (const downloadType of ['Download HTML', 'Download JSON']) {
+      await page.getByText('Download').first().click()
 
-  const page1Promise = page.waitForEvent('popup')
-  const downloadPromise = page.waitForEvent('download')
+      const page1Promise = page.waitForEvent('popup')
+      const downloadPromise = page.waitForEvent('download')
 
-  await page.getByRole('menuitem', { name: 'Download HTML' }).click()
+      await page.getByRole('menuitem', { name: downloadType }).click()
 
-  const [_, download] = await Promise.all([page1Promise, downloadPromise])
+      const [_, download] = await Promise.all([page1Promise, downloadPromise])
 
-  expect(await download.failure()).toBeNull()
-})
-
-test('Download test suite test', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
-
-  await page.waitForLoadState('domcontentloaded')
-
-  await page.getByRole('tab', { name: 'Test Suite' }).click()
-
-  await page.waitForLoadState('domcontentloaded')
-
-  await page.getByText('Download').first().click()
-
-  const page1Promise = page.waitForEvent('popup')
-  const downloadPromise = page.waitForEvent('download')
-
-  await page.getByRole('menuitem', { name: 'Download HTML' }).click()
-
-  const [_, download] = await Promise.all([page1Promise, downloadPromise])
-
-  expect(await download.failure()).toBeNull()
+      expect(await download.failure()).toBeNull()
+    }
+  }
 })
