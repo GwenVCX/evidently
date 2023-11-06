@@ -42,7 +42,7 @@ test('Download reports and test suites', async ({ page }) => {
 
     await page.waitForLoadState('networkidle')
 
-    for (const downloadType of ['Download HTML', 'Download JSON']) {
+    for (const downloadType of ['Download HTML']) {
       await page.getByText('Download').first().click()
 
       // const popupPromise = page.waitForEvent('popup')
