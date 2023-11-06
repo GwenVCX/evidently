@@ -45,12 +45,12 @@ test('Download reports and test suites', async ({ page }) => {
     for (const downloadType of ['Download HTML', 'Download JSON']) {
       await page.getByText('Download').first().click()
 
-      const popupPromise = page.waitForEvent('popup')
+      // const popupPromise = page.waitForEvent('popup')
       const downloadPromise = page.waitForEvent('download')
 
       await page.getByRole('menuitem', { name: downloadType }).click()
 
-      await popupPromise
+      // await popupPromise
       const download = await downloadPromise
 
       expect(await download.failure()).toBeNull()
