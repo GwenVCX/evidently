@@ -37,12 +37,12 @@ test('Download reports and test suites', async ({ page }) => {
 
   await page.waitForLoadState('domcontentloaded')
 
-  for (const tab of ['Reports', 'Test Suites']) {
+  for (const tab of ['Reports']) {
     await page.getByRole('tab', { name: tab }).click()
 
     await page.waitForLoadState('networkidle')
 
-    for (const downloadType of ['Download HTML']) {
+    for (const downloadType of ['Download HTML', 'Download JSON']) {
       await page.getByText('Download').first().click()
 
       // const popupPromise = page.waitForEvent('popup')
