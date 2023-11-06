@@ -37,7 +37,7 @@ test('Download reports and test suites', async ({ page }) => {
 
   await page.waitForLoadState('domcontentloaded')
 
-  for (const tab of ['Reports', 'Test Suite']) {
+  for (const tab of ['Reports', 'Test Suites']) {
     await page.getByRole('tab', { name: tab }).click()
 
     await page.waitForLoadState('domcontentloaded')
@@ -62,6 +62,60 @@ test('We expect to see at least 3 plotly graphs', async ({ page }) => {
   for (let index = 0; index < 3; index++) {
     await expect(page.locator('.js-plotly-plot').nth(index)).toBeVisible()
   }
+})
+
+test('Filter Reports by tags', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+
+  await page.getByRole('tab', { name: 'Reports' }).click()
+
+  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
+
+  const rowsNumberBeforeFiltration = await page.getByRole('row').count()
+
+  await page
+    .getByRole('button', { name: /high_seasonality|production_critical|tabular_data/ })
+    .first()
+    .click()
+
+  const rowsNumberAfterFiltration = await page.getByRole('row').count()
+
+  console.log(
+    'rowsNumberBeforeFiltration, rowsNumberAfterFiltration',
+    rowsNumberBeforeFiltration,
+    rowsNumberAfterFiltration
+  )
+
+  expect(rowsNumberBeforeFiltration).toBeGreaterThan(rowsNumberAfterFiltration)
+})
+
+test('Filter Test suites by tags', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+
+  await page.getByRole('tab', { name: 'Test Suites' }).click()
+
+  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
+  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
+
+  const rowsNumberBeforeFiltration = await page.getByRole('row').count()
+
+  await page
+    .getByRole('button', { name: /high_seasonality|production_critical|tabular_data/ })
+    .first()
+    .click()
+
+  const rowsNumberAfterFiltration = await page.getByRole('row').count()
+
+  console.log(
+    'rowsNumberBeforeFiltration, rowsNumberAfterFiltration',
+    rowsNumberBeforeFiltration,
+    rowsNumberAfterFiltration
+  )
+
+  expect(rowsNumberBeforeFiltration).toBeGreaterThan(rowsNumberAfterFiltration)
 })
 
 test('Altering project title and description', async ({ page }) => {
