@@ -31,7 +31,7 @@ test('Can view Snapshot', async ({ page }) => {
   await expect(page.getByText('Drift per Column', { exact: true }).first()).toBeVisible()
 })
 
-test('Download reports and test suites', async ({ page }) => {
+test('Download reports', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
 
@@ -40,17 +40,36 @@ test('Download reports and test suites', async ({ page }) => {
   for (const tab of ['Reports']) {
     await page.getByRole('tab', { name: tab }).click()
 
-    await page.waitForLoadState('networkidle')
-
     for (const downloadType of ['Download HTML', 'Download JSON']) {
       await page.getByText('Download').first().click()
 
-      // const popupPromise = page.waitForEvent('popup')
       const downloadPromise = page.waitForEvent('download')
 
       await page.getByRole('menuitem', { name: downloadType }).click()
 
-      // await popupPromise
+      const download = await downloadPromise
+
+      expect(await download.failure()).toBeNull()
+    }
+  }
+})
+
+test('Download test suites', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+
+  await page.waitForLoadState('domcontentloaded')
+
+  for (const tab of ['Test Suites']) {
+    await page.getByRole('tab', { name: tab }).click()
+
+    for (const downloadType of ['Download HTML', 'Download JSON']) {
+      await page.getByText('Download').first().click()
+
+      const downloadPromise = page.waitForEvent('download')
+
+      await page.getByRole('menuitem', { name: downloadType }).click()
+
       const download = await downloadPromise
 
       expect(await download.failure()).toBeNull()
