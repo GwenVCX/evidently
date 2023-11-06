@@ -71,6 +71,6 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: playwright-report
+        name: playwright-report-node-v-${{ matrix.node-version }}
         path: ui/v2/service/playwright-report/
         retention-days: 30
