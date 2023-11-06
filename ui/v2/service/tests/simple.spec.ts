@@ -40,7 +40,7 @@ test('Download reports and test suites', async ({ page }) => {
   for (const tab of ['Reports', 'Test Suites']) {
     await page.getByRole('tab', { name: tab }).click()
 
-    await page.waitForLoadState('domcontentloaded')
+    await page.waitForLoadState('networkidle')
 
     for (const downloadType of ['Download HTML', 'Download JSON']) {
       await page.getByText('Download').first().click()
