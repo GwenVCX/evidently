@@ -6,13 +6,12 @@ test('Has title', async ({ page }) => {
   await expect(page).toHaveTitle(/Evidently/)
 })
 
-test('Navigation test (aka DFS by links...)', async ({ page }) => {
+test('Can view Snapshot', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
   await page.getByText('Bike Rental Demand Forecast').click()
   await page.getByRole('tab', { name: 'Reports' }).click()
 
-  await page.getByRole('button', { name: 'production_critical' }).first().click()
   await expect(page.getByRole('columnheader', { name: 'Report ID' })).toBeVisible()
   await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
   await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
