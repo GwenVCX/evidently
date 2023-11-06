@@ -45,11 +45,12 @@ test('Download reports and test suites', async ({ page }) => {
     for (const downloadType of ['Download HTML', 'Download JSON']) {
       await page.getByText('Download').first().click()
 
+      const page1Promise = page.waitForEvent('popup')
       const downloadPromise = page.waitForEvent('download')
 
       await page.getByRole('menuitem', { name: downloadType }).click()
 
-      const download = await downloadPromise
+      const [_, download] = await Promise.all([page1Promise, downloadPromise])
 
       expect(await download.failure()).toBeNull()
     }
@@ -64,58 +65,34 @@ test('We expect to see at least 3 plotly graphs', async ({ page }) => {
   }
 })
 
-test('Filter Reports by tags', async ({ page }) => {
+test('Filter Reports and Test Suites by tags', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
 
-  await page.getByRole('tab', { name: 'Reports' }).click()
+  for (const [tab, columnName] of [
+    ['Reports', 'Report ID'],
+    ['Test Suites', 'Test Suite ID']
+  ]) {
+    await page.getByRole('tab', { name: tab }).click()
+    await expect(page.getByRole('columnheader', { name: columnName })).toBeVisible()
 
-  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
-  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
+    const rowsNumberBeforeFiltration = await page.getByRole('row').count()
 
-  const rowsNumberBeforeFiltration = await page.getByRole('row').count()
+    await page
+      .getByRole('button', { name: /high_seasonality|production_critical|tabular_data/ })
+      .first()
+      .click()
 
-  await page
-    .getByRole('button', { name: /high_seasonality|production_critical|tabular_data/ })
-    .first()
-    .click()
+    const rowsNumberAfterFiltration = await page.getByRole('row').count()
 
-  const rowsNumberAfterFiltration = await page.getByRole('row').count()
+    console.log(
+      'rowsNumberBeforeFiltration, rowsNumberAfterFiltration',
+      rowsNumberBeforeFiltration,
+      rowsNumberAfterFiltration
+    )
 
-  console.log(
-    'rowsNumberBeforeFiltration, rowsNumberAfterFiltration',
-    rowsNumberBeforeFiltration,
-    rowsNumberAfterFiltration
-  )
-
-  expect(rowsNumberBeforeFiltration).toBeGreaterThan(rowsNumberAfterFiltration)
-})
-
-test('Filter Test suites by tags', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
-
-  await page.getByRole('tab', { name: 'Test Suites' }).click()
-
-  await expect(page.getByRole('columnheader', { name: 'Tags' })).toBeVisible()
-  await expect(page.getByRole('columnheader', { name: 'Timestamp' })).toBeVisible()
-
-  const rowsNumberBeforeFiltration = await page.getByRole('row').count()
-
-  await page
-    .getByRole('button', { name: /high_seasonality|production_critical|tabular_data/ })
-    .first()
-    .click()
-
-  const rowsNumberAfterFiltration = await page.getByRole('row').count()
-
-  console.log(
-    'rowsNumberBeforeFiltration, rowsNumberAfterFiltration',
-    rowsNumberBeforeFiltration,
-    rowsNumberAfterFiltration
-  )
-
-  expect(rowsNumberBeforeFiltration).toBeGreaterThan(rowsNumberAfterFiltration)
+    expect(rowsNumberBeforeFiltration).toBeGreaterThan(rowsNumberAfterFiltration)
+  }
 })
 
 test('Altering project title and description', async ({ page }) => {
