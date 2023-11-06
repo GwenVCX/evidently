@@ -117,12 +117,21 @@ test('Altering project title and description', async ({ page }) => {
 
   await page.waitForLoadState('domcontentloaded')
 
-  await expect(page.getByText('Reviews new description')).toBeVisible()
   await expect(page.getByText('Reviews new title')).toBeVisible()
+  await expect(page.getByText('Reviews new description')).toBeVisible()
 
-  await page.getByRole('link', { name: 'Reviews new' }).click()
+  await page.getByRole('link', { name: 'Reviews new title' }).hover()
+
+  await page.getByText('Reviews new titleReviews new description').getByTestId('EditIcon').click()
+
+  await page.locator('input[name="name"]').fill('Demo project - Reviews')
+  await page
+    .locator('input[name="description"]')
+    .fill(
+      'A toy demo project using E-commerce Reviews dataset. Text and tabular data, classification.'
+    )
+
+  await page.getByText('Save').click()
 
   await page.waitForLoadState('domcontentloaded')
-
-  await expect(page.getByText('Dashboard')).toBeVisible()
 })
