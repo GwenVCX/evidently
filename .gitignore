@@ -23,3 +23,5 @@ test-workspace
 workspace
 
 playwright-report
+
+test-results

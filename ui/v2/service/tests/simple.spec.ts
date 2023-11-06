@@ -64,3 +64,47 @@ test('Smoke test', async ({ page }) => {
   await page.getByRole('button', { name: 'View' }).first().click()
   await expect(page.getByText('Drift per Column', { exact: true }).first()).toBeVisible()
 })
+
+test('Download report test', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+
+  await page.waitForLoadState('domcontentloaded')
+
+  await page.getByRole('tab', { name: 'Reports' }).click()
+
+  await page.waitForLoadState('domcontentloaded')
+
+  await page.getByText('Download').first().click()
+
+  const page1Promise = page.waitForEvent('popup')
+  const downloadPromise = page.waitForEvent('download')
+
+  await page.getByRole('menuitem', { name: 'Download HTML' }).click()
+
+  const [_, download] = await Promise.all([page1Promise, downloadPromise])
+
+  expect(await download.failure()).toBeNull()
+})
+
+test('Download test suite test', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Demo project - Bikes' }).click()
+
+  await page.waitForLoadState('domcontentloaded')
+
+  await page.getByRole('tab', { name: 'Test Suite' }).click()
+
+  await page.waitForLoadState('domcontentloaded')
+
+  await page.getByText('Download').first().click()
+
+  const page1Promise = page.waitForEvent('popup')
+  const downloadPromise = page.waitForEvent('download')
+
+  await page.getByRole('menuitem', { name: 'Download HTML' }).click()
+
+  const [_, download] = await Promise.all([page1Promise, downloadPromise])
+
+  expect(await download.failure()).toBeNull()
+})
